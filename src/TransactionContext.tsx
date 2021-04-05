@@ -1,3 +1,4 @@
+import { type } from 'node:os';
 import { createContext, ReactNode, useEffect, useState } from 'react';
 
 import { api } from './services/api';
@@ -5,17 +6,31 @@ import { api } from './services/api';
 interface TransactionsProps {
   id: number;
   title: string;
-  type: 'deposit' | 'withdraw';
+  type: string;
   category: string;
   amount: number;
   createdAt: string;
+}
+
+interface TransactionInput {
+  title: string;
+  type: string;
+  category: string;
+  amount: number;
 }
 
 interface TransactionsProviderProps {
   children: ReactNode;
 }
 
-export const TransactionsContext = createContext<TransactionsProps[]>([]);
+interface TransactionContextData {
+  transactions: TransactionsProps[];
+  createdTransaction: (transaction: TransactionInput) => void;
+}
+
+export const TransactionsContext = createContext<TransactionContextData>(
+  {} as TransactionContextData,
+);
 
 export function TransactionProvider({ children }: TransactionsProviderProps) {
   const [transactions, setTransactions] = useState<TransactionsProps[]>([]);
@@ -26,8 +41,12 @@ export function TransactionProvider({ children }: TransactionsProviderProps) {
     );
   }, []);
 
+  function createdTransaction(transaction: TransactionInput) {
+    api.post('/transactions', transaction);
+  }
+
   return (
-    <TransactionsContext.Provider value={transactions}>
+    <TransactionsContext.Provider value={{ transactions, createdTransaction }}>
       {children}
     </TransactionsContext.Provider>
   );

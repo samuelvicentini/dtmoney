@@ -1,4 +1,4 @@
-import { FormEvent, useState } from 'react';
+import { FormEvent, useState, useContext } from 'react';
 import Modal from 'react-modal';
 
 import closeImg from '../../assets/close.svg';
@@ -6,6 +6,8 @@ import incomeIng from '../../assets/income.svg';
 import outcomeImg from '../../assets/outcome.svg';
 import { api } from '../../services/api';
 import * as S from './styles';
+
+import { TransactionsContext } from '../../TransactionContext';
 
 interface NewTransactionModalProps {
   isOpen: boolean;
@@ -16,6 +18,8 @@ export function NewTransactionModal({
   isOpen,
   onRequestClose,
 }: NewTransactionModalProps) {
+  const { createdTransaction } = useContext(TransactionsContext);
+
   const [title, setTitle] = useState('');
   const [value, setValue] = useState(0);
   const [category, setCategory] = useState('');
@@ -24,14 +28,12 @@ export function NewTransactionModal({
   function handleCreateNewTransaction(event: FormEvent) {
     event.preventDefault();
 
-    const data = {
+    createdTransaction({
       title,
-      value,
+      amount: value,
       category,
       type,
-    };
-
-    api.post('/transactions', data);
+    });
   }
 
   return (
@@ -101,4 +103,7 @@ export function NewTransactionModal({
       </S.Container>
     </Modal>
   );
+}
+function transactionsContext(transactionsContext: any) {
+  throw new Error('Function not implemented.');
 }
