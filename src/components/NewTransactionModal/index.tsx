@@ -4,7 +4,6 @@ import Modal from 'react-modal';
 import closeImg from '../../assets/close.svg';
 import incomeIng from '../../assets/income.svg';
 import outcomeImg from '../../assets/outcome.svg';
-import { api } from '../../services/api';
 import * as S from './styles';
 
 import { TransactionsContext } from '../../TransactionContext';
@@ -34,6 +33,8 @@ export function NewTransactionModal({
       category,
       type,
     });
+
+    onRequestClose();
   }
 
   return (
@@ -103,7 +104,4 @@ export function NewTransactionModal({
       </S.Container>
     </Modal>
   );
-}
-function transactionsContext(transactionsContext: any) {
-  throw new Error('Function not implemented.');
 }
